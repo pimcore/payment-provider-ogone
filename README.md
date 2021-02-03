@@ -49,6 +49,12 @@ pimcore_ecommerce_config:
 #                       encryptionType: SHA256 or SHA512 (optional)
 ```
 
+Payment Information: Order payment section "Payment Informations" stores information about every payment trial by Customer.
+
+Add additional fields in "PaymentInfo" fieldcollection, so that Order Manager stores information in Order object:
+![PaymentInfo Additional Data](./doc/img/ogone_paymentinfo.png)
+
+
 ## Implementation
 
 Somewhere in your checkout controller you will need to create the payment configuration for the `initPayment()`
