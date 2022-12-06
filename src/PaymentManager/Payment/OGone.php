@@ -401,7 +401,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
     }
 
     /**
-     * @inheritdoc
+     * @return array
      */
     public function getAuthorizedData()
     {
@@ -422,8 +422,8 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
      *  if price is given, recurPayment command is executed
      *  if no price is given, amount from authorized Data is used and deposit command is executed
      *
-     * @param PriceInterface $price
-     * @param string $reference
+     * @param PriceInterface|null $price
+     * @param string|null $reference
      *
      * @return StatusInterface
      *
