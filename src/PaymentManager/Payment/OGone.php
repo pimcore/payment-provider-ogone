@@ -178,13 +178,9 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
     public function initPayment(PriceInterface $price, array $config)
     {
         //form name needs to be null in order to make sure the element names are correct - and not FORMNAME[ELEMENTNAME]
-        $form = $this->formFactory->createNamedBuilder(null, FormType::class, [], [
+        $form = $this->formFactory->createNamedBuilder('', FormType::class, [], [
             'attr' => ['id' => 'payment_ogone_form'],
         ]);
-
-        /** @var \OnlineShop\Framework\Model\AbstractPaymentInformation $paymentInfo * */
-        $paymentInfo = $config['paymentInfo'];
-        //$order = $paymentInfo->getObject();
 
         $form->setAction($this->serverURL);
         $form->setMethod('post');
@@ -235,7 +231,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
     /**
      * Handles response of payment provider and creates payment status object. Fingerprint must match.
      *
-     * @param array $response
+     * @param StatusInterface|array $response
      *
      * @return StatusInterface
      *
@@ -395,7 +391,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         foreach ($additionalParams as $key => $value) {
             if (!in_array($key, self::$_SHA_IN_PARAMETERS)) {
                 throw new \Exception('Unknown parameter "%s" for oGone. Please only use parameters that are specified by oGone. Also see "%s".',
-                    $key, 'https://payment-services.ingenico.com/int/en/ogone/support/guides/integration%20guides/e-commerce/link-your-website-to-the-payment-page#formparameters');
+                    $key, new \Exception('https://payment-services.ingenico.com/int/en/ogone/support/guides/integration%20guides/e-commerce/link-your-website-to-the-payment-page#formparameters'));
             } else {
                 $params[$key] = $value;
             }
