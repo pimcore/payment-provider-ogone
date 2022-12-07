@@ -228,7 +228,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
      *
      * @throws \Exception
      */
-    public function handleResponse(StatusInterface|array $response): StatusInterface
+    public function handleResponse(StatusInterface | array $response): StatusInterface
     {
         $cleanedResponseParams = $response;
         unset($cleanedResponseParams['orderId']);
