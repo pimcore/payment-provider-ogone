@@ -168,14 +168,9 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
     /**
      * Start payment and build form, including fingerprint for Ogone.
      *
-     * @param PriceInterface $price
-     * @param array $config
-     *
-     * @return FormBuilderInterface
-     *
      * @throws \Exception
      */
-    public function initPayment(PriceInterface $price, array $config)
+    public function initPayment(PriceInterface $price, array $config): FormBuilderInterface
     {
         //form name needs to be null in order to make sure the element names are correct - and not FORMNAME[ELEMENTNAME]
         $form = $this->formFactory->createNamedBuilder('', FormType::class, [], [
@@ -231,13 +226,9 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
     /**
      * Handles response of payment provider and creates payment status object. Fingerprint must match.
      *
-     * @param StatusInterface|array $response
-     *
-     * @return StatusInterface
-     *
      * @throws \Exception
      */
-    public function handleResponse($response)
+    public function handleResponse(StatusInterface|array $response): StatusInterface
     {
         $cleanedResponseParams = $response;
         unset($cleanedResponseParams['orderId']);
@@ -290,10 +281,6 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
 
     /**
      * Check options that have been passed by the main configuration
-     *
-     * @param OptionsResolver $resolver
-     *
-     * @return OptionsResolver
      */
     protected function configureOptions(OptionsResolver $resolver): OptionsResolver
     {
@@ -316,26 +303,15 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         return $resolver;
     }
 
-    /**
-     * @inheritdoc
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'OGone';
     }
 
     /**
      * Helper method for adding hidden fields to a form.
-     *
-     * @param FormBuilderInterface $form
-     * @param string $name
-     * @param string $value
-     *
-     * @return FormBuilderInterface
      */
-    private function addHiddenField(FormBuilderInterface &$form, $name, $value)
+    private function addHiddenField(FormBuilderInterface &$form, string $name, string $value): FormBuilderInterface
     {
         return $form->add($name, HiddenType::class, ['data' => $value]);
     }
@@ -346,10 +322,8 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
      * @param string $key the name of the provider option.
      * @param string $default if given (not empty) then the default value will be used if there is no array entry. If empty, then a missing key
      *        will result in an error.
-     *
-     * @return mixed|string
      */
-    private function getProviderOption(string $key, $default = '')
+    private function getProviderOption(string $key, string $default = ''): mixed
     {
         return empty($default) ? $this->providerOptions[$key] : (isset($this->providerOptions[$key]) ? $this->providerOptions[$key] : $default);
     }
@@ -358,14 +332,9 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
      * Overwrite this method if you want to pass additional parmeters to Ogone during the @link(initPayment) method.
      * The parameters must be one of @code(self::$_SHA_IN_PARAMETERS)
      *
-     * @param array $params
-     * @param array $config
-     *
-     * @return array
-     *
      * @throws \Exception
      */
-    protected function mapAdditionalPaymentData(array $params, array $config)
+    protected function mapAdditionalPaymentData(array $params, array $config): array
     {
         /* Example fields: EMAIL, "CN", "OWNERADDRESS", "OWNERZIP", "OWNERCITY", etc. */
         $additionalParams = []; //@map onto additional params from config
@@ -377,15 +346,9 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
      * Process additional parameters, such as customer data and throw an exception if invalid parameters have been
      * passed (invalid = not known by the oGone register).
      *
-     * @param array $params
-     * @param array $config
-     * @param array $additionalParams
-     *
-     * @return array
-     *
      * @throws \Exception
      */
-    private function processAdditionalPaymentData(array $params, array $config, array $additionalParams)
+    private function processAdditionalPaymentData(array $params, array $config, array $additionalParams): array
     {
         /* Example fields: EMAIL, "CN", "OWNERADDRESS", "OWNERZIP", "OWNERCITY", etc. */
         foreach ($additionalParams as $key => $value) {
@@ -400,10 +363,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         return $params;
     }
 
-    /**
-     * @return array
-     */
-    public function getAuthorizedData()
+    public function getAuthorizedData(): array
     {
         return $this->authorizedData;
     }
@@ -422,14 +382,9 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
      *  if price is given, recurPayment command is executed
      *  if no price is given, amount from authorized Data is used and deposit command is executed
      *
-     * @param PriceInterface|null $price
-     * @param string|null $reference
-     *
-     * @return StatusInterface
-     *
      * @throws \Exception
      */
-    public function executeDebit(PriceInterface $price = null, $reference = null)
+    public function executeDebit(?PriceInterface $price = null, ?string $reference = null): StatusInterface
     {
         throw new NotImplementedException('executeDebit is not implemented yet.');
     }
@@ -437,15 +392,9 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
     /**
      * Executes credit
      *
-     * @param PriceInterface $price
-     * @param string $reference
-     * @param string $transactionId
-     *
-     * @return StatusInterface
-     *
      * @throws \Exception
      */
-    public function executeCredit(PriceInterface $price, $reference, $transactionId)
+    public function executeCredit(PriceInterface $price, string $reference, string $transactionId): StatusInterface
     {
         throw new NotImplementedException('executeCredit is not implemented yet.');
     }
@@ -456,10 +405,8 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
      * @param  array  $parameters The parameters.
      * @param  array  $include    Which parameters to include.
      * @param  string $passphrase The passphrase to use.
-     *
-     * @return string
      */
-    protected function getRawSHA($parameters, $include, $passphrase)
+    protected function getRawSHA(array $parameters, array $include, string $passphrase): string
     {
         uksort($parameters, 'strnatcasecmp'); //sort by keys, case insensitivity
         $params = [];
@@ -484,7 +431,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
      *
      * @throws \Exception
      */
-    private function getSHA(string $encryptionType, string $rawString)
+    private function getSHA(string $encryptionType, string $rawString): string
     {
         switch ($encryptionType) {
             case 'SHA1':

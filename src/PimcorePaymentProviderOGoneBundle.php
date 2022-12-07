@@ -23,18 +23,12 @@ class PimcorePaymentProviderOGoneBundle extends AbstractPimcoreBundle
 {
     use PackageVersionTrait;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getComposerPackageName(): string
     {
         return 'pimcore/payment-provider-ogone';
     }
 
-    /**
-     * @return Installer|null
-     */
-    public function getInstaller()
+    public function getInstaller(): ?Installer
     {
         return $this->container->get(Installer::class);
     }
