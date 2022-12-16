@@ -29,7 +29,6 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Intl\Exception\NotImplementedException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -386,7 +385,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
      */
     public function executeDebit(?PriceInterface $price = null, ?string $reference = null): StatusInterface
     {
-        throw new NotImplementedException('executeDebit is not implemented yet.');
+        throw new \Exception('executeDebit is not implemented yet.');
     }
 
     /**
@@ -396,7 +395,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
      */
     public function executeCredit(PriceInterface $price, string $reference, string $transactionId): StatusInterface
     {
-        throw new NotImplementedException('executeCredit is not implemented yet.');
+        throw new \Exception('executeCredit is not implemented yet.');
     }
 
     /**
