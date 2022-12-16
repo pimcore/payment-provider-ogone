@@ -28,7 +28,7 @@ class PimcorePaymentProviderOGoneBundle extends AbstractPimcoreBundle
         return 'pimcore/payment-provider-ogone';
     }
 
-    public function getInstaller(): ?Installer
+    public function getInstaller(): Installer
     {
         return $this->container->get(Installer::class);
     }
