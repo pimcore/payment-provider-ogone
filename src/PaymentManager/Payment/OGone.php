@@ -394,8 +394,11 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         /* Example fields: EMAIL, "CN", "OWNERADDRESS", "OWNERZIP", "OWNERCITY", etc. */
         foreach ($additionalParams as $key => $value) {
             if (!in_array($key, self::$_SHA_IN_PARAMETERS)) {
-                throw new \Exception('Unknown parameter "%s" for oGone. Please only use parameters that are specified by oGone. Also see "%s".',
-                    $key, new \Exception('https://payment-services.ingenico.com/int/en/ogone/support/guides/integration%20guides/e-commerce/link-your-website-to-the-payment-page#formparameters'));
+                throw new \Exception(
+                    sprintf('Unknown parameter "%s" for Ogone. Please only use parameters that are specified by oGone. Also see "%s".',
+                        $key,
+                        'https://support.legacy.worldline-solutions.com/en/integration-solutions/integrations/hosted-payment-page#send-mandatory---recommended---optional-parameters'
+                    ));
             } else {
                 $params[$key] = $value;
             }
