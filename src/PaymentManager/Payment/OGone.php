@@ -36,7 +36,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Class OGone
  * Payment integration for Ingenico OGone
  *
- * @see https://payment-services.ingenico.com/int/en/ogone/support/guides/integration%20guides/e-commerce/introduction
+ * @see https://support.legacy.worldline-solutions.com/en/integration-solutions/integrations/hosted-payment-page
  *
  * @package Pimcore\Bundle\EcommerceFrameworkBundle\PaymentManager\Payment
  *
