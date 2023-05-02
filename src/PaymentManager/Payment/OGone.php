@@ -130,28 +130,32 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         'WIN3DS',                          'WITHROOT',
     ];
 
-    /** @var string[] parameters that can be used for the creation of the SHA fingerprint */
+    /**
+     * @see https://shared.ecom-psp.com/v2/docs/guides/e-Commerce/SHA-OUT_params.txt
+     * @var string[] parameters that can be used for the creation of the SHA fingerprint
+     */
     private static $_SHA_OUT_PARAMETERS = [
             'AAVADDRESS',               'AAVCHECK',             'AAVMAIL',
             'AAVNAME',                  'AAVPHONE',             'AAVZIP',
             'ACCEPTANCE',               'ALIAS',                'AMOUNT',
             'BIC',                      'BIN',                  'BRAND',
             'CARDNO',                   'CCCTY',                'CN',
-            'COLLECTOR_BIC',            'COLLECTOR_IBAN',       'COMPLUS',
-            'CREATION_STATUS',          'CREDITDEBIT',          'CURRENCY',
-            'CVCCHECK',                 'DCC_COMMPERCENTAGE',   'DCC_CONVAMOUNT',
-            'DCC_CONVCCY',              'DCC_EXCHRATE',         'DCC_EXCHRATESOURCE',
-            'DCC_EXCHRATETS',           'DCC_INDICATOR',        'DCC_MARGINPERCENTAGE',
-            'DCC_VALIDHOURS',           'DEVICEID',             'DIGESTCARDNO',
-            'ECI',                      'ED',                   'EMAIL',
-            'ENCCARDNO',                'FXAMOUNT',             'FXCURRENCY',
-            'IP',                       'IPCTY',                'MANDATEID',
-            'MOBILEMODE',               'NBREMAILUSAGE',        'NBRIPUSAGE',
-            'NBRIPUSAGE_ALLTX',         'NBRUSAGE',             'NCERROR',
-            'ORDERID',                  'PAYID',                'PAYIDSUB',
-            'PAYMENT_REFERENCE',        'PM',                   'SCO_CATEGORY',
-            'SCORING',                  'SEQUENCETYPE',         'SIGNDATE',
-            'STATUS',                   'SUBBRAND',             'SUBSCRIPTION_ID',
+            'COLLECTOR_BIC',            'COLLECTOR_IBAN',       'COMPLETIONID',
+            'COMPLUS',                  'CREATION_STATUS',      'CREDITDEBIT',
+            'CURRENCY',                 'CVCCHECK',             'DCC_COMMPERCENTAGE',
+            'DCC_CONVAMOUNT',           'DCC_CONVCCY',          'DCC_EXCHRATE',
+            'DCC_EXCHRATESOURCE',       'DCC_EXCHRATETS',       'DCC_INDICATOR',
+            'DCC_MARGINPERCENTAGE',     'DCC_VALIDHOURS',       'DEVICEID',
+            'DIGESTCARDNO',             'ECI',                  'ED',
+            'EMAIL',                    'ENCCARDNO',            'FXAMOUNT',
+            'FXCURRENCY',               'IP',                   'IPCTY',
+            'MANDATEID',                'MOBILEMODE',           'NBREMAILUSAGE',
+            'NBRIPUSAGE',               'NBRIPUSAGE_ALLTX',     'NBRUSAGE',
+            'NCERROR',                  'ORDERID',              'PAYID',
+            'PAYIDSUB',                 'PAYMENT_REFERENCE',    'PM',
+            'REQUESTCOMPLETIONID',      'SCO_CATEGORY',         'SCORING',
+            'SEQUENCETYPE',             'SIGNDATE',             'STATUS',
+            'SUBBRAND',                 'SUBSCRIPTION_ID',      'TICKET',
             'TRXDATE',                  'VC',
     ];
 
