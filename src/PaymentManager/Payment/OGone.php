@@ -215,7 +215,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         }
 
         // new sha verification method (all parameters)
-        $params = $this->getRawSHA($params, self::$_SHA_IN_PARAMETERS, $this->getProviderOption('secret'));
+        $params = $this->getRawSHA($params, self::$_SHA_IN_PARAMETERS, $this->getProviderOption('secretIn'));
         $sha = $this->getSHA($this->getProviderOption('encryptionType'), $params);
         $this->addHiddenField($form, 'SHASIGN', $sha);
 
@@ -246,7 +246,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         $cleanedResponseParams = $response;
         unset($cleanedResponseParams['orderId']);
 
-        $params = $this->getRawSHA($cleanedResponseParams, self::$_SHA_OUT_PARAMETERS, $this->getProviderOption('secret'));
+        $params = $this->getRawSHA($cleanedResponseParams, self::$_SHA_OUT_PARAMETERS, $this->getProviderOption('secretOut'));
         $verificationSha = $this->getSHA($this->getProviderOption('encryptionType'), $params);
 
         if ($verificationSha != $response['SHASIGN']) {
@@ -305,7 +305,8 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
 
         $resolver->setRequired([
             'pspid',
-            'secret',
+            'secretIn',
+            'secretOut',
             'encryptionType',
             'mode',
         ]);
