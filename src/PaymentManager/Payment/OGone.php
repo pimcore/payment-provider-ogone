@@ -260,7 +260,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         $oGonePaymentId = $response['PAYID'];
         $ip = $response['IP'];
         $orderId = $response['orderID'];
-        $state = $response['state']; //success,
+        $status = (int)$response['STATUS'];
 
         // restore price object for payment status
         $price = new Price(Decimal::create($amount), new Currency($currency));
@@ -279,11 +279,13 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
             $orderId, //internal Payment ID
             $orderId, //paymentReference
             '',
-            !empty($orderId) && $state === 'success' ? StatusInterface::STATUS_AUTHORIZED : StatusInterface::STATUS_CANCELLED,
+            !empty($orderId) && ($status === 5 || $status === 9) ?
+                StatusInterface::STATUS_AUTHORIZED :
+                StatusInterface::STATUS_CANCELLED,
             [
                 'ogone_amount' => (string)$price,
                 'ogone_paymentId' => $oGonePaymentId,
-                'ogone_paymentState' => $state,
+                'ogone_paymentState' => $status,
                 'ogone_paymentType' => $paymentMethod,
                 'ogone_response' => $response,
             ]
