@@ -36,7 +36,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Class OGone
  * Payment integration for Ingenico OGone
  *
- * @see https://payment-services.ingenico.com/int/en/ogone/support/guides/integration%20guides/e-commerce/introduction
+ * @see https://support.legacy.worldline-solutions.com/en/integration-solutions/integrations/hosted-payment-page
  *
  * @package Pimcore\Bundle\EcommerceFrameworkBundle\PaymentManager\Payment
  *
@@ -130,28 +130,32 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         'WIN3DS',                          'WITHROOT',
     ];
 
-    /** @var string[] parameters that can be used for the creation of the SHA fingerprint */
+    /**
+     * @see https://shared.ecom-psp.com/v2/docs/guides/e-Commerce/SHA-OUT_params.txt
+     * @var string[] parameters that can be used for the creation of the SHA fingerprint
+     */
     private static $_SHA_OUT_PARAMETERS = [
             'AAVADDRESS',               'AAVCHECK',             'AAVMAIL',
             'AAVNAME',                  'AAVPHONE',             'AAVZIP',
             'ACCEPTANCE',               'ALIAS',                'AMOUNT',
             'BIC',                      'BIN',                  'BRAND',
             'CARDNO',                   'CCCTY',                'CN',
-            'COLLECTOR_BIC',            'COLLECTOR_IBAN',       'COMPLUS',
-            'CREATION_STATUS',          'CREDITDEBIT',          'CURRENCY',
-            'CVCCHECK',                 'DCC_COMMPERCENTAGE',   'DCC_CONVAMOUNT',
-            'DCC_CONVCCY',              'DCC_EXCHRATE',         'DCC_EXCHRATESOURCE',
-            'DCC_EXCHRATETS',           'DCC_INDICATOR',        'DCC_MARGINPERCENTAGE',
-            'DCC_VALIDHOURS',           'DEVICEID',             'DIGESTCARDNO',
-            'ECI',                      'ED',                   'EMAIL',
-            'ENCCARDNO',                'FXAMOUNT',             'FXCURRENCY',
-            'IP',                       'IPCTY',                'MANDATEID',
-            'MOBILEMODE',               'NBREMAILUSAGE',        'NBRIPUSAGE',
-            'NBRIPUSAGE_ALLTX',         'NBRUSAGE',             'NCERROR',
-            'ORDERID',                  'PAYID',                'PAYIDSUB',
-            'PAYMENT_REFERENCE',        'PM',                   'SCO_CATEGORY',
-            'SCORING',                  'SEQUENCETYPE',         'SIGNDATE',
-            'STATUS',                   'SUBBRAND',             'SUBSCRIPTION_ID',
+            'COLLECTOR_BIC',            'COLLECTOR_IBAN',       'COMPLETIONID',
+            'COMPLUS',                  'CREATION_STATUS',      'CREDITDEBIT',
+            'CURRENCY',                 'CVCCHECK',             'DCC_COMMPERCENTAGE',
+            'DCC_CONVAMOUNT',           'DCC_CONVCCY',          'DCC_EXCHRATE',
+            'DCC_EXCHRATESOURCE',       'DCC_EXCHRATETS',       'DCC_INDICATOR',
+            'DCC_MARGINPERCENTAGE',     'DCC_VALIDHOURS',       'DEVICEID',
+            'DIGESTCARDNO',             'ECI',                  'ED',
+            'EMAIL',                    'ENCCARDNO',            'FXAMOUNT',
+            'FXCURRENCY',               'IP',                   'IPCTY',
+            'MANDATEID',                'MOBILEMODE',           'NBREMAILUSAGE',
+            'NBRIPUSAGE',               'NBRIPUSAGE_ALLTX',     'NBRUSAGE',
+            'NCERROR',                  'ORDERID',              'PAYID',
+            'PAYIDSUB',                 'PAYMENT_REFERENCE',    'PM',
+            'REQUESTCOMPLETIONID',      'SCO_CATEGORY',         'SCORING',
+            'SEQUENCETYPE',             'SIGNDATE',             'STATUS',
+            'SUBBRAND',                 'SUBSCRIPTION_ID',      'TICKET',
             'TRXDATE',                  'VC',
     ];
 
@@ -211,7 +215,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         }
 
         // new sha verification method (all parameters)
-        $params = $this->getRawSHA($params, self::$_SHA_IN_PARAMETERS, $this->getProviderOption('secret'));
+        $params = $this->getRawSHA($params, self::$_SHA_IN_PARAMETERS, $this->getProviderOption('secretIn'));
         $sha = $this->getSHA($this->getProviderOption('encryptionType'), $params);
         $this->addHiddenField($form, 'SHASIGN', $sha);
 
@@ -242,7 +246,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         $cleanedResponseParams = $response;
         unset($cleanedResponseParams['orderId']);
 
-        $params = $this->getRawSHA($cleanedResponseParams, self::$_SHA_OUT_PARAMETERS, $this->getProviderOption('secret'));
+        $params = $this->getRawSHA($cleanedResponseParams, self::$_SHA_OUT_PARAMETERS, $this->getProviderOption('secretOut'));
         $verificationSha = $this->getSHA($this->getProviderOption('encryptionType'), $params);
 
         if ($verificationSha != $response['SHASIGN']) {
@@ -256,7 +260,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         $oGonePaymentId = $response['PAYID'];
         $ip = $response['IP'];
         $orderId = $response['orderID'];
-        $state = $response['state']; //success,
+        $status = (int)$response['STATUS'];
 
         // restore price object for payment status
         $price = new Price(Decimal::create($amount), new Currency($currency));
@@ -275,11 +279,13 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
             $orderId, //internal Payment ID
             $orderId, //paymentReference
             '',
-            !empty($orderId) && $state === 'success' ? StatusInterface::STATUS_AUTHORIZED : StatusInterface::STATUS_CANCELLED,
+            !empty($orderId) && ($status === 5 || $status === 9) ?
+                StatusInterface::STATUS_AUTHORIZED :
+                StatusInterface::STATUS_CANCELLED,
             [
                 'ogone_amount' => (string)$price,
                 'ogone_paymentId' => $oGonePaymentId,
-                'ogone_paymentState' => $state,
+                'ogone_paymentState' => $status,
                 'ogone_paymentType' => $paymentMethod,
                 'ogone_response' => $response,
             ]
@@ -301,7 +307,8 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
 
         $resolver->setRequired([
             'pspid',
-            'secret',
+            'secretIn',
+            'secretOut',
             'encryptionType',
             'mode',
         ]);
@@ -390,8 +397,11 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         /* Example fields: EMAIL, "CN", "OWNERADDRESS", "OWNERZIP", "OWNERCITY", etc. */
         foreach ($additionalParams as $key => $value) {
             if (!in_array($key, self::$_SHA_IN_PARAMETERS)) {
-                throw new \Exception('Unknown parameter "%s" for oGone. Please only use parameters that are specified by oGone. Also see "%s".',
-                    $key, new \Exception('https://payment-services.ingenico.com/int/en/ogone/support/guides/integration%20guides/e-commerce/link-your-website-to-the-payment-page#formparameters'));
+                throw new \Exception(
+                    sprintf('Unknown parameter "%s" for Ogone. Please only use parameters that are specified by oGone. Also see "%s".',
+                        $key,
+                        'https://support.legacy.worldline-solutions.com/en/integration-solutions/integrations/hosted-payment-page#send-mandatory---recommended---optional-parameters'
+                    ));
             } else {
                 $params[$key] = $value;
             }
