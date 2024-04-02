@@ -376,7 +376,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         return $this->authorizedData;
     }
 
-    public function setAuthorizedData(array $authorizedData)
+    public function setAuthorizedData(array $authorizedData): void
     {
         $this->authorizedData = $authorizedData;
     }
