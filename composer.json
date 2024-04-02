@@ -10,6 +10,7 @@
   "minimum-stability": "dev",
   "require": {
     "pimcore/pimcore": "^11.0",
+    "pimcore/ecommerce-framework-bundle": "^1.0.0",
     "symfony/intl": "^6.1"
   },
   "require-dev": {
