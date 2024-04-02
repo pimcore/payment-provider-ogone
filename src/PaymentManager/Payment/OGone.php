@@ -43,6 +43,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFrameworkBundle\PaymentManager\V7\Payment\PaymentInterface
 {
     private static $OGONE_SERVER_URL_TEST = 'https://secure.ogone.com/ncol/test/orderstandard_utf8.asp';
+
     private static $OGONE_SERVER_URL_LIVE = 'https://secure.ogone.com/ncol/prod/orderstandard_utf8.asp';
 
     /**
@@ -131,6 +132,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
 
     /**
      * @see https://shared.ecom-psp.com/v2/docs/guides/e-Commerce/SHA-OUT_params.txt
+     *
      * @var string[] parameters that can be used for the creation of the SHA fingerprint
      */
     private static $_SHA_OUT_PARAMETERS = [
@@ -216,9 +218,6 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         return $form;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function startPayment(OrderAgentInterface $orderAgent, PriceInterface $price, AbstractRequest $config): StartPaymentResponseInterface
     {
         $form = $this->initPayment($price, $config->asArray());
@@ -342,7 +341,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
      */
     protected function mapAdditionalPaymentData(array $params, array $config): array
     {
-        /* Example fields: EMAIL, "CN", "OWNERADDRESS", "OWNERZIP", "OWNERCITY", etc. */
+        // Example fields: EMAIL, "CN", "OWNERADDRESS", "OWNERZIP", "OWNERCITY", etc.
         $additionalParams = []; //@map onto additional params from config
 
         return $additionalParams;
@@ -356,7 +355,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
      */
     private function processAdditionalPaymentData(array $params, array $config, array $additionalParams): array
     {
-        /* Example fields: EMAIL, "CN", "OWNERADDRESS", "OWNERZIP", "OWNERCITY", etc. */
+        // Example fields: EMAIL, "CN", "OWNERADDRESS", "OWNERZIP", "OWNERCITY", etc.
         foreach ($additionalParams as $key => $value) {
             if (!in_array($key, self::$_SHA_IN_PARAMETERS)) {
                 throw new \Exception(
@@ -377,9 +376,6 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
         return $this->authorizedData;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setAuthorizedData(array $authorizedData)
     {
         $this->authorizedData = $authorizedData;
@@ -426,6 +422,7 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
                 $params[$upperKey] = $upperKey .'='. $value;
             }
         }
+
         // add secret key and return
         return implode($passphrase, $params) . $passphrase;
     }
@@ -449,12 +446,14 @@ class OGone extends AbstractPayment implements \Pimcore\Bundle\EcommerceFramewor
                 if (function_exists('hash')) {
                     return mb_strtoupper(hash('sha256', $rawString));
                 }
+
                 break;
             case 'SHA512':
                 if (function_exists('hash')) {
                     return mb_strtoupper(hash('sha512', $rawString));
                 }
         }
+
         throw new \Exception(sprintf('Algorithm "%s" not available in OGone payment provider.', $encryptionType));
     }
 }
