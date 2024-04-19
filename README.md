@@ -38,15 +38,16 @@ pimcore_ecommerce_config:
                 profile: sandbox
                 profiles:
                     sandbox:
-                        secret: D343DDFD3434
+                        secretIn: D343DDFD3434
+                        secretOut: E454EEGE4545
                         pspid: MyTestAccount
                         mode: sandbox                        
-#                       encryptionType: SHA256 or SHA512 (optional)                                              
+#                       encryptionType: SHA1 or SHA256 or SHA512 (optional)
                     live:
-                        secret: D343DDFD3434
-                        pspid: MyLiveAccount
+                        secretIn: D343DDFD3434
+                        secretOut: E454EEGE4545
                         mode: live                        
-#                       encryptionType: SHA256 or SHA512 (optional)
+#                       encryptionType: SHA1 or SHA256 or SHA512 (optional)
 ```
 
 Payment Information: Order payment section "Payment Informations" stores information about every payment trial by Customer.

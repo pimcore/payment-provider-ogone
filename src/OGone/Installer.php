@@ -19,9 +19,9 @@ use Pimcore\Bundle\EcommerceFrameworkBundle\Tools\PaymentProviderInstaller;
 
 class Installer extends PaymentProviderInstaller
 {
-    protected $bricksPath = __DIR__ . '/../../install/objectbrick_sources/';
+    protected string $bricksPath = __DIR__ . '/../../install/objectbrick_sources/';
 
-    protected $bricksToInstall = [
-        'PaymentProviderOGone' => 'objectbrick_PaymentProviderOGone_export.json'
+    protected array $bricksToInstall = [
+        'PaymentProviderOGone' => 'objectbrick_PaymentProviderOGone_export.json',
     ];
 }
